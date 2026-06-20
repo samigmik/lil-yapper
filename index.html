@@ -344,10 +344,10 @@
 
 <div id="lock-screen">
   <div class="lock-box">
-    <h2>Muehehehe</h2></h2>
+    <h2>Muehehehe</h2>
     <p>enter the password to peek inside</p>
     <input type="password" id="lock-input" placeholder="password" autocomplete="off">
-    <button id="lock-submit">unlock</button>
+    <button id="lock-submit" type="button">unlock</button>
     <div class="lock-error" id="lock-error"></div>
   </div>
 </div>
@@ -382,19 +382,21 @@
   made with <span>mwa mwa</span> just for you
 </footer>
 
-<script type="module">
-  // ====== SET YOUR PASSWORD HERE ======
+<script>
+  // Password gate — its own plain script, completely independent of Firebase below.
+  // This means it always works even if Firebase fails to load for any reason.
   const SITE_PASSWORD = "DEC22";
-  // =====================================
-
   const lockKey = 'memories-unlocked';
+
   if (localStorage.getItem(lockKey) === 'true') {
     document.body.classList.remove('locked');
   }
+
   document.getElementById('lock-submit').addEventListener('click', tryUnlock);
   document.getElementById('lock-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') tryUnlock();
   });
+
   function tryUnlock(){
     const val = document.getElementById('lock-input').value;
     if (val === SITE_PASSWORD) {
@@ -404,7 +406,9 @@
       document.getElementById('lock-error').textContent = 'not quite — try again';
     }
   }
+</script>
 
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc
