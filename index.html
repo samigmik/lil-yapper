@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lil Yapper Diary</title>
+<title>for my favorite person</title>
 <style>
   :root{
     --paper:#fbf3e7;
@@ -55,6 +55,39 @@
     opacity:0.5;
     border-radius:3px;
     transform:rotate(1deg);
+  }
+
+  .corner-gif{
+    position:absolute;
+    width:90px;
+    height:auto;
+    top:20px;
+  }
+  .corner-gif.left{
+    left:20px;
+    animation:bob-left 3s ease-in-out infinite;
+  }
+  .corner-gif.right{
+    right:20px;
+    animation:bob-right 3s ease-in-out infinite;
+    animation-delay:1.5s;
+  }
+
+  @keyframes bob-left{
+    0%, 100% { transform:translateY(0) rotate(-6deg); }
+    50% { transform:translateY(-10px) rotate(-6deg); }
+  }
+  @keyframes bob-right{
+    0%, 100% { transform:translateY(0) rotate(6deg); }
+    50% { transform:translateY(-10px) rotate(6deg); }
+  }
+
+  @media (max-width:600px){
+    .corner-gif{ width:55px; top:10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .corner-gif{ animation:none; }
   }
 
   .upload-bar{
@@ -202,7 +235,7 @@
   .tape.rose{ background:var(--tape); left:50%; transform:translateX(-50%) rotate(-4deg); }
   .tape.moss{ background:var(--tape2); left:20%; transform:rotate(3deg); }
 
- .delete-btn{
+  .delete-btn{
     position:absolute;
     top:6px;
     right:6px;
@@ -221,12 +254,6 @@
   }
   .delete-btn:hover{ background:var(--rose); }
   .delete-btn:focus-visible{ outline:2px solid #fff; }
-  .polaroid:hover .delete-btn{ opacity:1; }
-  .delete-btn:hover{ background:var(--rose); }
-  .delete-btn:focus-visible{ opacity:1; outline:2px solid #fff; }
-  @media (hover:none){
-    .delete-btn{ opacity:1; }
-  }
 
   .empty-state{
     grid-column:1/-1;
@@ -256,8 +283,10 @@
 <body>
 
 <header class="hero">
-  <h1>a little museum of us<h1>
-  <p>a little corner of the internet just for our memories</p>
+  <img src="bubu1.gif" alt="bubu" class="corner-gif left">
+  <img src="dudu1.gif" alt="dudu" class="corner-gif right">
+  <h1>for the one who makes everything brighter</h1>
+  <p>a little corner of the internet just for our memories — add a photo any time, from either of our phones.</p>
   <div class="underline"></div>
 </header>
 
@@ -280,7 +309,7 @@
 </section>
 
 <footer>
-  made with <span>mwa mwa</span> just for you
+  made with <span>♡</span> just for you
 </footer>
 
 <script type="module">
@@ -290,15 +319,15 @@
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // ====== PASTE YOUR FIREBASE CONFIG HERE ======
- const firebaseConfig = {
-  apiKey: "AIzaSyCnV-De-jO_oycXIMa-28CvO4S7c-rZ7Ik",
-  authDomain: "lil-yapper.firebaseapp.com",
-  projectId: "lil-yapper",
-  storageBucket: "lil-yapper.firebasestorage.app",
-  messagingSenderId: "609376999548",
-  appId: "1:609376999548:web:7d08013e4a2e334f8fd1f9",
-  measurementId: "G-ZC703YGP6B"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCnV-De-jO_oycXIMa-28CvO4S7c-rZ7Ik",
+    authDomain: "lil-yapper.firebaseapp.com",
+    projectId: "lil-yapper",
+    storageBucket: "lil-yapper.firebasestorage.app",
+    messagingSenderId: "609376999548",
+    appId: "1:609376999548:web:7d08013e4a2e334f8fd1f9",
+    measurementId: "G-ZC703YGP6B"
+  };
   // ==============================================
 
   const app = initializeApp(firebaseConfig);
