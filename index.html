@@ -263,6 +263,66 @@
     padding:40px 0;
   }
 
+  /* Password gate */
+  #lock-screen{
+    position:fixed;
+    inset:0;
+    background:var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+  }
+  .lock-box{
+    text-align:center;
+    background:#fff8ee;
+    padding:40px 32px;
+    border-radius:6px;
+    box-shadow:0 12px 30px rgba(58,46,44,0.2);
+    max-width:320px;
+  }
+  .lock-box h2{
+    font-family:'Brush Script MT','Segoe Script',cursive;
+    color:var(--rose);
+    font-size:2rem;
+    margin:0 0 6px;
+  }
+  .lock-box p{
+    color:#8a7a72;
+    font-size:0.9rem;
+    margin:0 0 18px;
+  }
+  .lock-box input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid #e2d3c0;
+    border-radius:3px;
+    font-family:Georgia,serif;
+    font-size:1rem;
+    text-align:center;
+    margin-bottom:12px;
+  }
+  .lock-box button{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:3px;
+    background:var(--rose);
+    color:#fff8ee;
+    font-weight:bold;
+    font-family:Georgia,serif;
+    cursor:pointer;
+  }
+  .lock-box .lock-error{
+    color:var(--rose);
+    font-size:0.8rem;
+    min-height:1.2em;
+    margin-top:8px;
+  }
+  body.locked > *:not(#lock-screen){
+    display:none;
+  }
+
   footer{
     text-align:center;
     padding:30px 20px 60px;
@@ -280,7 +340,17 @@
   }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <h2>Muehehehe</h2></h2>
+    <p>enter the password to peek inside</p>
+    <input type="password" id="lock-input" placeholder="password" autocomplete="off">
+    <button id="lock-submit">unlock</button>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
 
 <header class="hero">
   <img src="bubu1.gif" alt="bubu" class="corner-gif left">
@@ -313,6 +383,28 @@
 </footer>
 
 <script type="module">
+  // ====== SET YOUR PASSWORD HERE ======
+  const SITE_PASSWORD = "DEC 22";
+  // =====================================
+
+  const lockKey = 'memories-unlocked';
+  if (localStorage.getItem(lockKey) === 'true') {
+    document.body.classList.remove('locked');
+  }
+  document.getElementById('lock-submit').addEventListener('click', tryUnlock);
+  document.getElementById('lock-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tryUnlock();
+  });
+  function tryUnlock(){
+    const val = document.getElementById('lock-input').value;
+    if (val === SITE_PASSWORD) {
+      localStorage.setItem(lockKey, 'true');
+      document.body.classList.remove('locked');
+    } else {
+      document.getElementById('lock-error').textContent = 'not quite — try again';
+    }
+  }
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc
