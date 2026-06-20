@@ -202,7 +202,7 @@
   .tape.rose{ background:var(--tape); left:50%; transform:translateX(-50%) rotate(-4deg); }
   .tape.moss{ background:var(--tape2); left:20%; transform:rotate(3deg); }
 
-  .delete-btn{
+ .delete-btn{
     position:absolute;
     top:6px;
     right:6px;
@@ -216,9 +216,11 @@
     line-height:26px;
     text-align:center;
     cursor:pointer;
-    opacity:0;
-    transition:opacity .2s ease, background .2s ease;
+    z-index:2;
+    transition:background .2s ease;
   }
+  .delete-btn:hover{ background:var(--rose); }
+  .delete-btn:focus-visible{ outline:2px solid #fff; }
   .polaroid:hover .delete-btn{ opacity:1; }
   .delete-btn:hover{ background:var(--rose); }
   .delete-btn:focus-visible{ opacity:1; outline:2px solid #fff; }
