@@ -390,6 +390,7 @@
 
   if (localStorage.getItem(lockKey) === 'true') {
     document.body.classList.remove('locked');
+    document.getElementById('lock-screen').style.display = 'none';
   }
 
   document.getElementById('lock-submit').addEventListener('click', tryUnlock);
@@ -402,6 +403,7 @@
     if (val === SITE_PASSWORD.trim().toUpperCase()) {
       localStorage.setItem(lockKey, 'true');
       document.body.classList.remove('locked');
+      document.getElementById('lock-screen').style.display = 'none';
     } else {
       document.getElementById('lock-error').textContent = 'not quite — try again';
     }
