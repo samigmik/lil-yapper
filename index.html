@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>for my favorite person</title>
+<style>
+  :root{
+    --paper:#fbf3e7;
+    --ink:#3a2e2c;
+    --rose:#d97b86;
+    --moss:#7c8a5e;
+    --tape:#f2c9b3;
+    --tape2:#cfe0c3;
+    --gold:#caa45e;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(217,123,134,0.06), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(124,138,94,0.07), transparent 40%);
+    color:var(--ink);
+    font-family: Georgia, 'Iowan Old Style', serif;
+    min-height:100vh;
+  }
+
+  header.hero{
+    text-align:center;
+    padding:80px 20px 40px;
+    position:relative;
+  }
+  header.hero h1{
+    font-size:clamp(2.4rem,6vw,4.2rem);
+    font-family:'Brush Script MT','Segoe Script',cursive;
+    color:var(--rose);
+    margin:0;
+    transform:rotate(-2deg);
+    letter-spacing:1px;
+  }
+  header.hero p{
+    margin:14px auto 0;
+    max-width:480px;
+    font-size:1.05rem;
+    color:#5c4d49;
+    font-style:italic;
+  }
+  header.hero .underline{
+    width:140px;
+    height:6px;
+    margin:18px auto 0;
+    background:var(--gold);
+    opacity:0.5;
+    border-radius:3px;
+    transform:rotate(1deg);
+  }
+
+  .upload-bar{
+    max-width:520px;
+    margin:0 auto 10px;
+    padding:18px 22px;
+    background:#fff8ee;
+    border:1px solid rgba(58,46,44,0.08);
+    border-radius:4px;
+    box-shadow:0 8px 18px rgba(58,46,44,0.08);
+    text-align:center;
+  }
+  .upload-bar p.label{
+    margin:0 0 10px;
+    font-size:0.85rem;
+    color:#8a7a72;
+    letter-spacing:0.5px;
+  }
+  .upload-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .upload-row input[type="text"]{
+    flex:1 1 180px;
+    min-width:160px;
+    padding:10px 12px;
+    border:1px solid #e2d3c0;
+    border-radius:3px;
+    background:#fffdf9;
+    font-family:Georgia,serif;
+    font-size:0.95rem;
+  }
+  .upload-row input[type="text"]:focus{
+    outline:2px solid var(--rose);
+    outline-offset:1px;
+  }
+  .file-btn, .submit-btn{
+    border:none;
+    padding:10px 16px;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:Georgia,serif;
+    font-size:0.9rem;
+  }
+  .file-btn{
+    background:var(--tape2);
+    color:var(--ink);
+  }
+  .submit-btn{
+    background:var(--rose);
+    color:#fff8ee;
+    font-weight:bold;
+  }
+  .submit-btn:disabled{
+    opacity:0.5;
+    cursor:default;
+  }
+  .file-btn:focus-visible, .submit-btn:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:2px;
+  }
+  #file-name-display{
+    font-size:0.8rem;
+    color:#8a7a72;
+    margin-top:8px;
+    min-height:1em;
+  }
+  #upload-status{
+    font-size:0.85rem;
+    margin-top:10px;
+    min-height:1.2em;
+    color:var(--moss);
+  }
+
+  .board{
+    max-width:1080px;
+    margin:0 auto;
+    padding:20px 24px 100px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:42px 28px;
+  }
+
+  .polaroid{
+    background:#fffdf9;
+    padding:14px 14px 50px;
+    box-shadow:0 10px 24px rgba(58,46,44,0.18), 0 2px 4px rgba(58,46,44,0.1);
+    position:relative;
+    transition:transform .25s ease, box-shadow .25s ease;
+    cursor:default;
+  }
+  .polaroid:nth-child(odd){ transform:rotate(-2.5deg); }
+  .polaroid:nth-child(even){ transform:rotate(2deg); }
+  .polaroid:hover{
+    transform:rotate(0deg) scale(1.04) translateY(-4px);
+    box-shadow:0 18px 34px rgba(58,46,44,0.25);
+    z-index:5;
+  }
+
+  .photo-slot{
+    width:100%;
+    aspect-ratio:1/1;
+    background:
+      repeating-linear-gradient(45deg, #ecdfd0 0 10px, #e4d4c2 10px 20px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#a8957f;
+    font-family:Georgia,serif;
+    font-size:0.8rem;
+    text-align:center;
+    padding:10px;
+    overflow:hidden;
+  }
+  .photo-slot img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .caption{
+    font-family:'Brush Script MT','Segoe Script',cursive;
+    font-size:1.3rem;
+    text-align:center;
+    color:var(--ink);
+    margin-top:12px;
+    position:absolute;
+    bottom:10px;
+    left:0;
+    right:0;
+    padding:0 8px;
+  }
+
+  .tape{
+    position:absolute;
+    top:-14px;
+    width:60px;
+    height:26px;
+    opacity:0.85;
+    border-radius:2px;
+  }
+  .tape.rose{ background:var(--tape); left:50%; transform:translateX(-50%) rotate(-4deg); }
+  .tape.moss{ background:var(--tape2); left:20%; transform:rotate(3deg); }
+
+  .empty-state{
+    grid-column:1/-1;
+    text-align:center;
+    color:#a8957f;
+    font-style:italic;
+    padding:40px 0;
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 20px 60px;
+    font-size:0.9rem;
+    color:#8a7a72;
+  }
+  footer span{
+    font-family:'Brush Script MT','Segoe Script',cursive;
+    color:var(--rose);
+    font-size:1.2rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .polaroid{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>for the one who makes everything brighter</h1>
+  <p>a little corner of the internet just for our memories — add a photo any time, from either of our phones.</p>
+  <div class="underline"></div>
+</header>
+
+<div class="upload-bar">
+  <p class="label">ADD A NEW MEMORY</p>
+  <form id="upload-form">
+    <div class="upload-row">
+      <label class="file-btn" for="photo-input">choose photo</label>
+      <input id="photo-input" type="file" accept="image/*" style="display:none;">
+      <input id="caption-input" type="text" placeholder="caption (e.g. our first trip)" maxlength="60">
+      <button class="submit-btn" type="submit" id="submit-btn" disabled>add it</button>
+    </div>
+    <div id="file-name-display"></div>
+    <div id="upload-status"></div>
+  </form>
+</div>
+
+<section class="board" id="board">
+  <div class="empty-state" id="empty-state">loading our memories...</div>
+</section>
+
+<footer>
+  made with <span>♡</span> just for you
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ====== PASTE YOUR FIREBASE CONFIG HERE ======
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  // ==============================================
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const board = document.getElementById('board');
+  const form = document.getElementById('upload-form');
+  const fileInput = document.getElementById('photo-input');
+  const captionInput = document.getElementById('caption-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const fileNameDisplay = document.getElementById('file-name-display');
+  const statusEl = document.getElementById('upload-status');
+
+  let chosenFile = null;
+
+  fileInput.addEventListener('change', () => {
+    chosenFile = fileInput.files[0] || null;
+    fileNameDisplay.textContent = chosenFile ? chosenFile.name : '';
+    submitBtn.disabled = !chosenFile;
+  });
+
+  // Compress + resize image in the browser, then return a base64 data URL.
+  // Keeps Firestore docs small (well under the 1MB document limit) without needing Storage.
+  function compressImage(file, maxDim = 900, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => { img.src = e.target.result; };
+      reader.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > maxDim) {
+          height = Math.round(height * (maxDim / width));
+          width = maxDim;
+        } else if (height > maxDim) {
+          width = Math.round(width * (maxDim / height));
+          height = maxDim;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!chosenFile) return;
+    submitBtn.disabled = true;
+    statusEl.textContent = 'adding your memory...';
+    try {
+      let dataUrl = await compressImage(chosenFile);
+      if (dataUrl.length > 900000) {
+        dataUrl = await compressImage(chosenFile, 600, 0.5);
+      }
+      await addDoc(collection(db, 'memories'), {
+        url: dataUrl,
+        caption: captionInput.value.trim() || 'a sweet memory',
+        createdAt: serverTimestamp()
+      });
+      statusEl.textContent = 'added! 💛';
+      form.reset();
+      fileNameDisplay.textContent = '';
+      chosenFile = null;
+      setTimeout(() => statusEl.textContent = '', 2500);
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'something went wrong — try again?';
+      submitBtn.disabled = false;
+    }
+  });
+
+  const memoriesQuery = query(collection(db, 'memories'), orderBy('createdAt', 'desc'));
+  onSnapshot(memoriesQuery, (snapshot) => {
+    if (snapshot.empty) {
+      board.innerHTML = '<div class="empty-state">no memories yet — add the first one above!</div>';
+      return;
+    }
+    board.innerHTML = '';
+    let i = 0;
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const tapeClass = i % 2 === 0 ? 'rose' : 'moss';
+      const card = document.createElement('div');
+      card.className = 'polaroid';
+      card.innerHTML = `
+        <div class="tape ${tapeClass}"></div>
+        <div class="photo-slot">
+          <img src="${data.url}" alt="${(data.caption||'').replace(/"/g,'&quot;')}" loading="lazy">
+        </div>
+        <div class="caption">${data.caption || ''}</div>
+      `;
+      board.appendChild(card);
+      i++;
+    });
+  }, (err) => {
+    console.error(err);
+    board.innerHTML = '<div class="empty-state">couldn\'t load memories — check your Firebase setup.</div>';
+  });
+</script>
+
+</body>
+</html>
