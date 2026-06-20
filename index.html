@@ -202,6 +202,30 @@
   .tape.rose{ background:var(--tape); left:50%; transform:translateX(-50%) rotate(-4deg); }
   .tape.moss{ background:var(--tape2); left:20%; transform:rotate(3deg); }
 
+  .delete-btn{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:26px;
+    height:26px;
+    border:none;
+    border-radius:50%;
+    background:rgba(58,46,44,0.55);
+    color:#fff;
+    font-size:0.85rem;
+    line-height:26px;
+    text-align:center;
+    cursor:pointer;
+    opacity:0;
+    transition:opacity .2s ease, background .2s ease;
+  }
+  .polaroid:hover .delete-btn{ opacity:1; }
+  .delete-btn:hover{ background:var(--rose); }
+  .delete-btn:focus-visible{ opacity:1; outline:2px solid #fff; }
+  @media (hover:none){
+    .delete-btn{ opacity:1; }
+  }
+
   .empty-state{
     grid-column:1/-1;
     text-align:center;
@@ -260,19 +284,19 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp
+    getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // ====== PASTE YOUR FIREBASE CONFIG HERE ======
  const firebaseConfig = {
-    apiKey: "AIzaSyCnV-De-jO_oycXIMa-28CvO4S7c-rZ7Ik",
-    authDomain: "lil-yapper.firebaseapp.com",
-    projectId: "lil-yapper",
-    storageBucket: "lil-yapper.firebasestorage.app",
-    messagingSenderId: "609376999548",
-    appId: "1:609376999548:web:7d08013e4a2e334f8fd1f9",
-    measurementId: "G-ZC703YGP6B"
-  };
+  apiKey: "AIzaSyCnV-De-jO_oycXIMa-28CvO4S7c-rZ7Ik",
+  authDomain: "lil-yapper.firebaseapp.com",
+  projectId: "lil-yapper",
+  storageBucket: "lil-yapper.firebasestorage.app",
+  messagingSenderId: "609376999548",
+  appId: "1:609376999548:web:7d08013e4a2e334f8fd1f9",
+  measurementId: "G-ZC703YGP6B"
+};
   // ==============================================
 
   const app = initializeApp(firebaseConfig);
@@ -357,18 +381,29 @@
     }
     board.innerHTML = '';
     let i = 0;
-    snapshot.forEach((doc) => {
-      const data = doc.data();
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
       const tapeClass = i % 2 === 0 ? 'rose' : 'moss';
       const card = document.createElement('div');
       card.className = 'polaroid';
       card.innerHTML = `
         <div class="tape ${tapeClass}"></div>
+        <button class="delete-btn" title="remove this photo" data-id="${docSnap.id}">✕</button>
         <div class="photo-slot">
           <img src="${data.url}" alt="${(data.caption||'').replace(/"/g,'&quot;')}" loading="lazy">
         </div>
         <div class="caption">${data.caption || ''}</div>
       `;
+      card.querySelector('.delete-btn').addEventListener('click', async () => {
+        if (confirm('Remove this photo?')) {
+          try {
+            await deleteDoc(doc(db, 'memories', docSnap.id));
+          } catch (err) {
+            console.error(err);
+            alert('Could not delete — try again?');
+          }
+        }
+      });
       board.appendChild(card);
       i++;
     });
